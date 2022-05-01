@@ -6,11 +6,14 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+
 //сервер поисковой системы запускается поток поисковой системы
 //методом "run()", который в главном классе запускается методом "start()"
+
 public class StreamSearchServer extends Thread {
-    private final int port;
     private static BooleanSearchEngine engine;
+    private final int port;
 
     public StreamSearchServer(int port, String pdfsDir) throws IOException {
         this.port = port;
@@ -19,28 +22,36 @@ public class StreamSearchServer extends Thread {
 
     @Override
     public void run() {
-        while (!isInterrupted()){
-            try {
-                ServerSocket serverSocket = new ServerSocket(port);
+        try {
+            ServerSocket serverSocket = new ServerSocket(port);
+            while (!isInterrupted()) {
                 Socket socket = serverSocket.accept();
-
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                var word = in.readLine();
+                String word;
+                try {
+                    word = in.readLine();
+                } catch (SocketException socketException) {
+                    continue;
+                }
                 var wordToJson = searchAndOutToJson(word);
-
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 out.println(wordToJson);
-
-                serverSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                socket.close();
+                out.close();
+                in.close();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
-    private String searchAndOutToJson (String word) {
+    private String searchAndOutToJson(String word) {
         var pageEntryList = engine.search(word);
         var gson = new GsonBuilder().create();
+        if (pageEntryList.isEmpty()) {
+            return "Слово не найдено.";
+        }
         return gson.toJson(pageEntryList);
     }
 }

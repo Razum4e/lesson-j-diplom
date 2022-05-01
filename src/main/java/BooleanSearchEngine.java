@@ -5,11 +5,12 @@ import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-    /*поисковый движок работает если в директории есть файлы
-    *типа .pdf
-    *движок ищет в тексте ровно то слово в конструкторе,
-    *которое было указано, без использования синонимов
-    *и прочих приёмов нечётного поиска*/
+
+/*поисковый движок работает если в директории есть файлы
+ *типа .pdf
+ *движок ищет в тексте ровно то слово в конструкторе,
+ *которое было указано, без использования синонимов
+ *и прочих приёмов нечётного поиска*/
 public class BooleanSearchEngine implements SearchEngine {
 
     private final Map<String, List<PageEntry>> wordsAll = new HashMap<>();
@@ -32,7 +33,7 @@ public class BooleanSearchEngine implements SearchEngine {
                     } //сохраняет ключем слово, а значением его кол-во, а если встречается еще, то каждый раз увеличивая
                     freqs.put(word.toLowerCase(), freqs.getOrDefault(word, 0) + 1);
                 }
-                for (Map.Entry<String, Integer> entry: freqs.entrySet()){ //обход каждого слова
+                for (Map.Entry<String, Integer> entry : freqs.entrySet()) { //обход каждого слова
                     List<PageEntry> pageEntryList = new ArrayList<>(); //лист изначальный для каждого слова
                     if (wordsAll.containsKey(entry.getKey())) // если слово в общей мапе существует, то
                         pageEntryList = wordsAll.get(entry.getKey()); //получаем лист имеющего слова и пересохр вместо изначального значения- листа
