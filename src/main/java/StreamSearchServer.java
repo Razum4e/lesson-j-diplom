@@ -14,6 +14,7 @@ import java.net.SocketException;
 public class StreamSearchServer extends Thread {
     private static BooleanSearchEngine engine;
     private final int port;
+    private ServerSocket serverSocket;
 
     public StreamSearchServer(int port, String pdfsDir) throws IOException {
         this.port = port;
@@ -23,9 +24,15 @@ public class StreamSearchServer extends Thread {
     @Override
     public void run() {
         try {
-            ServerSocket serverSocket = new ServerSocket(port);
-            while (!isInterrupted()) {
-                Socket socket = serverSocket.accept();
+            serverSocket = new ServerSocket(port);
+            while (true) {
+                Socket socket;
+                try {
+                    socket = serverSocket.accept();
+                } catch (SocketException e) {
+                    System.out.println("Сервер закрыт.");
+                    break;
+                }
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 String word;
                 try {
@@ -44,6 +51,15 @@ public class StreamSearchServer extends Thread {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void interrupt() {
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private String searchAndOutToJson(String word) {
