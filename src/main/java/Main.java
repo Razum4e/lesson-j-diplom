@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) throws IOException {
-        var server = new StreamSearchServer(9999, "pdfs");
+        var server = new StreamSearchServer(8989, "pdfs");
         server.start();//для завершения работы сервера введите "end" в консоль
 
         //только запуск/закрытие сервера
