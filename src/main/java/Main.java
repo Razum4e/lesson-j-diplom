@@ -7,8 +7,9 @@ import java.util.Scanner;
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
+    private static final int port = 8989;
     public static void main(String[] args) throws IOException {
-        var server = new StreamSearchServer(8989, "pdfs");
+        var server = new StreamSearchServer(port, "pdfs");
         server.start();//для завершения работы сервера введите "end" в консоль
 
         //только запуск/закрытие сервера
@@ -28,7 +29,7 @@ public class Main {
 //                server.interrupt();
 //                break;
 //            }
-//            var socket = new Socket("localhost", 9999);
+//            var socket = new Socket("localhost", port);
 //            var out = new PrintWriter(socket.getOutputStream(), true);
 //            var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 //            out.println(line);

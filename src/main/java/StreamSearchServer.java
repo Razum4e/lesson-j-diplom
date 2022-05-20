@@ -26,28 +26,19 @@ public class StreamSearchServer extends Thread {
         try {
             serverSocket = new ServerSocket(port);
             while (true) {
-                Socket socket;
-                try {
-                    socket = serverSocket.accept();
+                try (Socket socket = serverSocket.accept();
+                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                     PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+                    var word = in.readLine();
+                    var wordToJson = searchAndOutToJson(word);
+                    out.println(wordToJson);
                 } catch (SocketException e) {
                     System.out.println("Сервер закрыт.");
                     break;
                 }
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                String word;
-                try {
-                    word = in.readLine();
-                } catch (SocketException socketException) {
-                    continue;
-                }
-                var wordToJson = searchAndOutToJson(word);
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                out.println(wordToJson);
-                socket.close();
-                out.close();
-                in.close();
             }
         } catch (IOException e) {
+            System.out.println("Ошибка старта сервера.");
             e.printStackTrace();
         }
 
