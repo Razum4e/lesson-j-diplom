@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final int port = 8989;
+
     public static void main(String[] args) throws IOException {
         var server = new StreamSearchServer(port, "pdfs");
         server.start();//для завершения работы сервера введите "end" в консоль
@@ -15,7 +16,7 @@ public class Main {
         //только запуск/закрытие сервера
         while (true) {
             System.out.print("Ввод:");
-            if (scanner.nextLine().equals("end")){
+            if (scanner.nextLine().equals("end")) {
                 server.interrupt();
                 break;
             }

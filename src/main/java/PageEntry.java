@@ -11,10 +11,7 @@ public class PageEntry implements Comparable<PageEntry> {
 
     @Override
     public int compareTo(PageEntry o) {
-        int result = this.pdfName.compareTo(o.pdfName);
-        if (result == 0)
-            return Integer.compare(this.page, o.page);
-        return result;
+        return Integer.compare(o.count, this.count);
     }
 
     @Override
